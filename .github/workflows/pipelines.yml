@@ -1,17 +1,9 @@
 name: Blob storage website CI
-
 variables:
-- name: storageName
-  value: storage12345webhost
-
-- name: resourceGroupName
-  value: Resources
-
-- name: cdnProfileName
-  value: staticwebsitecdn
-
-- name: cdnEndpointName
-  value: staticwebsitecdnendpoint
+  storageName: storage12345webhost
+  resourceGroupName: Resources
+  cdnProfileName: staticwebsitecdn
+  cdnEndpointName: staticwebsitecdnendpoint
 
 on:
     push:
