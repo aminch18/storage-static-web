@@ -1,0 +1,46 @@
+name: Blob storage website CI
+
+variables:
+- name: storageName
+  value: storage12345webhost
+
+- name: resourceGroupName
+  value: Resources
+
+- name: cdnProfileName
+  value: staticwebsitecdn
+
+- name: cdnEndpointName
+  value: staticwebsitecdnendpoint
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+        branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:            
+    - uses: actions/checkout@v2
+    - uses: azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Upload to blob storage
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.0.72
+        inlineScript: |
+            az storage blob upload-batch --account-name ${{ variables.storageName }}-d '$web' -s .
+    - name: Purge CDN endpoint
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.0.72
+        inlineScript: |
+          az cdn endpoint purge --content-paths  "/*" --profile-name ${{ variables.cdnProfileName }} --name ${{ variables.cdnEndpointName }}  --resource-group ${{ variables.resourceGroupName }}
+
+    - name: logout
+      run: |
+            az logout
