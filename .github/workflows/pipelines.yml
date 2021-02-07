@@ -15,8 +15,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
     steps:            
     - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - run: npm install
+    - run: npm run build
+
     - uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -26,7 +36,7 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-            az storage blob upload-batch --account-name ${{ env.storageName }} -d '$web' -s .
+            az storage blob upload-batch --account-name ${{ env.storageName }} -s $GITHUB_WORKSPACE/build  -d '$web' .
     - name: Purge CDN endpoint
       uses: azure/CLI@v1
       with:
