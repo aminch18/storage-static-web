@@ -26,13 +26,13 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-            az storage blob upload-batch --account-name ${{ variables.storageName }}-d '$web' -s .
+            az storage blob upload-batch --account-name ${{ storageName }}-d '$web' -s .
     - name: Purge CDN endpoint
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az cdn endpoint purge --content-paths  "/*" --profile-name ${{ variables.cdnProfileName }} --name ${{ variables.cdnEndpointName }}  --resource-group ${{ variables.resourceGroupName }}
+          az cdn endpoint purge --content-paths  "/*" --profile-name ${{ cdnProfileName }} --name ${{ cdnEndpointName }}  --resource-group ${{ resourceGroupName }}
 
     - name: logout
       run: |
