@@ -1,10 +1,10 @@
 name: Blob storage website CI
 
 env:
-  storageName: storage12345webhost
-  resourceGroupName: Resources
-  cdnProfileName: staticwebsitecdn
-  cdnEndpointName: staticwebsitecdnendpoint
+  storageName: 'storage12345webhost'
+  resourceGroupName: 'Resources'
+  cdnProfileName: 'staticwebsitecdn'
+  cdnEndpointName: 'staticwebsitecdnendpoint'
 
 on:
     push:
@@ -26,13 +26,13 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-            az storage blob upload-batch --account-name ${{ storageName }}-d '$web' -s .
+            az storage blob upload-batch --account-name ${{ env.storageName }}-d '$web' -s .
     - name: Purge CDN endpoint
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az cdn endpoint purge --content-paths  "/*" --profile-name ${{ cdnProfileName }} --name ${{ cdnEndpointName }}  --resource-group ${{ resourceGroupName }}
+          az cdn endpoint purge --content-paths  "/*" --profile-name ${{ env.cdnProfileName }} --name ${{ env.cdnEndpointName }}  --resource-group ${{ env.resourceGroupName }}
 
     - name: logout
       run: |
