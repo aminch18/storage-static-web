@@ -33,7 +33,7 @@ jobs:
         azcliversion: 2.0.72
         inlineScript: |
           az cdn endpoint purge --content-paths  "/*" --profile-name ${{ env.cdnProfileName }} --name ${{ env.cdnEndpointName }}  --resource-group ${{ env.resourceGroupName }}
-
+#Logout
     - name: logout
       run: |
             az logout
