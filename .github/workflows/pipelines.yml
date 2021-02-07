@@ -1,5 +1,6 @@
 name: Blob storage website CI
-variables:
+
+env:
   storageName: storage12345webhost
   resourceGroupName: Resources
   cdnProfileName: staticwebsitecdn
