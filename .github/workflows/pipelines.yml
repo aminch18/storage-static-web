@@ -15,21 +15,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     node-version: [12.x, 14.x]
-
+    strategy:
+      matrix:
+        node: [ '12.x', '14.x' ]
+    name: Build Node version ${{ matrix.node }}
     steps:            
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: ' ${{ matrix.node }}'
     - run: |
         cd $GITHUB_WORKSPACE/incidents-app
         npm install
         npm run build
 
+  deploy:
+    runs-on: ubuntu-latest
+     steps:
     - uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -46,7 +49,7 @@ jobs:
         azcliversion: 2.0.72
         inlineScript: |
           az cdn endpoint purge --content-paths  "/*" --profile-name ${{ env.cdnProfileName }} --name ${{ env.cdnEndpointName }}  --resource-group ${{ env.resourceGroupName }}
-#Logout
-    - name: logout
+
+    - name: Logout
       run: |
             az logout
