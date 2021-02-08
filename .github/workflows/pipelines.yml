@@ -13,7 +13,7 @@ on:
         branches: [ master ]
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,9 +30,6 @@ jobs:
         npm install
         npm run build
 
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
     - uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
