@@ -5,6 +5,7 @@ env:
   resourceGroupName: 'Resources'
   cdnProfileName: 'staticwebsitecdn'
   cdnEndpointName: 'staticwebsitecdnendpoint'
+  artifactName: 'build-results-artifact'
 
 on:
     push:
@@ -24,11 +25,20 @@ jobs:
         cd $GITHUB_WORKSPACE/incidents-app
         npm install
         npm run build
+    - uses: /upload-artifact@master
+      with:
+        name:  ${{ env.artifactName }}
+        path: $GITHUB_WORKSPACE/incidents-app/build
 
   deploy:
     needs: build
+    name: Deploy
     runs-on: ubuntu-latest
-    steps:            
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+        name:  ${{ env.artifactName }}
+        path: $GITHUB_WORKSPACE/incidents-app/build    
     - uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -37,7 +47,7 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-            az storage blob upload-batch --account-name ${{ env.storageName }} -s $GITHUB_WORKSPACE/incidents-app/build  -d '$web'
+            az storage blob upload-batch --account-name ${{ env.storageName }} -s   -d '$web'
 
     - name: Purge CDN endpoint
       uses: azure/CLI@v1
