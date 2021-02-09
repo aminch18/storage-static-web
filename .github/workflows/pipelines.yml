@@ -38,11 +38,11 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - run: mkdir build
+    - uses: actions/checkout@v2
     - uses: actions/download-artifact@master
       with:
         name: ${{ env.artifactName }}
-        path:  build
+        path: ${{ github.workspace }}
 
     - uses: azure/login@v1
       with:
