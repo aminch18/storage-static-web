@@ -9,8 +9,6 @@ env:
 on:
     push:
         branches: [ master ]
-    pull_request:
-        branches: [ master ]
 
 jobs:
   build:
@@ -27,11 +25,10 @@ jobs:
         npm install
         npm run build
 
-   
-
   deploy:
-    name: Deploy
     needs: build
+    runs-on: ubuntu-latest
+    steps:            
     - uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
