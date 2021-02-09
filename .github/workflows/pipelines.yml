@@ -1,4 +1,4 @@
-name: Blob storage website CI
+name: Static website Azure Storage CI/CD
 
 env:
   storageName: 'storage12345webhost'
@@ -13,18 +13,14 @@ on:
         branches: [ master ]
 
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [ '12.x', '14.x' ]
-    name: Build Node version ${{ matrix.node }}
     steps:            
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: ' ${{ matrix.node }}'
+        node-version: '14.x'
     - run: |
         cd $GITHUB_WORKSPACE/incidents-app
         npm install
@@ -33,20 +29,22 @@ jobs:
     - uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+  deploy:
+    needs: build
     - name: Upload to blob storage
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
             az storage blob upload-batch --account-name ${{ env.storageName }} -s $GITHUB_WORKSPACE/incidents-app/build  -d '$web'
+
     - name: Purge CDN endpoint
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
           az cdn endpoint purge --content-paths  "/*" --profile-name ${{ env.cdnProfileName }} --name ${{ env.cdnEndpointName }}  --resource-group ${{ env.resourceGroupName }}
-
-    - name: Logout
+          
+    - name: logout
       run: |
             az logout
