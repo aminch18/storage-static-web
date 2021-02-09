@@ -24,24 +24,25 @@ jobs:
         node-version: '14.x'
 
     - run: |
-        cd $GITHUB_WORKSPACE/incidents-app
+        cd ${{ github.workspace }}/incidents-app
         npm install
         npm run build
         
     - uses: actions/upload-artifact@master
       with:
         name:  ${{ env.artifactName }}
-        path: $GITHUB_WORKSPACE/incidents-app/build
+        path: ${{ github.workspace }}/incidents-app/build
 
   deploy:
     needs: build
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+    - run: mkdir build
     - uses: actions/download-artifact@master
       with:
         name:  ${{ env.artifactName }}
-        path: $GITHUB_WORKSPACE/incidents-app/build
+        path:  build
 
     - uses: azure/login@v1
       with:
