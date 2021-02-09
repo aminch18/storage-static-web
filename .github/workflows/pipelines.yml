@@ -42,7 +42,7 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: ${{ env.artifactName }}
-        path: ${{ github.workspace }}
+        path: ${{ github.workspace }}/incidents-app/build
 
     - uses: azure/login@v1
       with:
