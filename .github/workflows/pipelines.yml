@@ -48,12 +48,14 @@ jobs:
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    -run: |
+        ls -R ${{ github.workspace }}
     - name: Upload to blob storage
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
-            az storage blob upload-batch --account-name ${{ env.storageName }} -s ${{ github.workspace }} -d '$web'
+            az storage blob upload-batch --account-name ${{ env.storageName }} -s ${{ github.workspace }}/incidents-app/build -d '$web'
 
     - name: Purge CDN endpoint
       uses: azure/CLI@v1
