@@ -48,7 +48,7 @@ jobs:
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    -run: |
+    - run: |
         ls -R ${{ github.workspace }}
     - name: Upload to blob storage
       uses: azure/CLI@v1
