@@ -48,8 +48,6 @@ jobs:
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - run: |
-        ls -R ${{ github.workspace }}
     - name: Upload to blob storage
       uses: azure/CLI@v1
       with:
@@ -64,6 +62,9 @@ jobs:
         inlineScript: |
           az cdn endpoint purge --content-paths  "/*" --profile-name ${{ env.cdnProfileName }} --name ${{ env.cdnEndpointName }}  --resource-group ${{ env.resourceGroupName }}
           
-    - name: logout
-      run: |
+    - name: Azure logout
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.0.72
+        inlineScript: |
             az logout
